@@ -1,5 +1,7 @@
 package com.spring.boot.swagger.config;
 
+import com.fasterxml.classmate.TypeResolver;
+import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -25,13 +27,28 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 //.apis(RequestHandlerSelectors.any())
-                .apis(RequestHandlerSelectors.basePackage("com.spring.boot.swagger"))                /** For load specific packages */
+               // .apis(RequestHandlerSelectors.basePackage("com.spring.boot.swagger.resource"))                //** For load specific packages *//
                 //.paths(PathSelectors.any())
-                .paths(PathSelectors.ant("/api/*"))         /** Path of the Apis*/
+                //.paths(PathSelectors.ant("/api/*"))         //** Path of the Apis*//
+                .paths(Predicates.or(
+                        PathSelectors.ant("/api/*"),
+                        PathSelectors.ant("/api/v2/*")))
                 .build()
                 .apiInfo(getApiInfo());
     }
 
+    /** For add additional models explicitly */
+    /*
+    @Bean
+    public Docket api(TypeResolver typeResolver) {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .paths(PathSelectors.ant("/api/v1/**"))
+                .build()
+                .additionalModels(typeResolver.resolve(CustomerDTO.class));
+    }
+
+*/
     /*@Bean
     public WebMvcConfigurer webMvcConfigurer() {
         return new WebMvcConfigurer() {
